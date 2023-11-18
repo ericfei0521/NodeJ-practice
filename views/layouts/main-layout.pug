@@ -7,7 +7,7 @@ html(lang="en")
         title #{pageTitle}
         link(rel="stylesheet", href="/css/main.css")
         block styles
-    body   
+    body
         header.main-header
             nav.main-header__nav
                 ul.main-header__item-list
@@ -17,6 +17,8 @@ html(lang="en")
                         a(href="/products", class=(path === '/products' ? 'active' : '')) Products
                     li.main-header__item
                         a(href="/cart", class=(path === '/cart' ? 'active' : '')) Cart
+                    li.main-header__item
+                        a(href="/orders", class=(path === '/orders' ? 'active' : '')) Orders
                     li.main-header__item
                         a(href="/admin/add-product", class=(path === '/admin/add-product' ? 'active' : '')) Add Product
                     li.main-header__item

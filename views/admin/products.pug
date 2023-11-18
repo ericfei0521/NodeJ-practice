@@ -1,8 +1,27 @@
 extends ../layouts/main-layout.pug
 
 block styles
-    link(rel="stylesheet", href="/css/forms.css")
     link(rel="stylesheet", href="/css/product.css")
 
 block content
-    h1 Admin Products
+    main
+        if prods.length > 0
+            .grid
+                each product in prods
+                    article.card.product-item
+                        header.card__header
+                            h1.product__title #{product.title}
+                        div.card__image
+                            img(src=product.imageUrl, alt="A Book")
+                        div.card__content
+                            h2.product__price $#{product.price}
+                            p.product__description #{product.description}
+                        div.btn-group
+                            .card__actions
+                                a(href=`/admin/edit-product/${product.id}`)
+                                    button.btn Edit
+                            .card__actions
+                                form(action="/admin/delete-product",method='POST')
+                                    button.btn(type='submit') Delete
+        else
+            h1 No Products

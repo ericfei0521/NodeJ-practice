@@ -1,10 +1,11 @@
 const fs = require('fs');
 const path = require('path');
 const rootDir = require('../util/path');
+const crypto = require('crypto');
 
 const productsPath = path.join(rootDir, 'data', 'products.json');
 
-const getProdctsFromFile = (cb) => {
+const getProductsFromFile = (cb) => {
     fs.readFile(productsPath, (error, fileContent) => {
         if (error) {
             cb([]);
@@ -22,8 +23,8 @@ module.exports = class Product {
         this.price = price;
     }
     save() {
-        getProdctsFromFile((products) => {
-            console.log('this', this);
+        this.id = crypto.randomUUID();
+        getProductsFromFile((products) => {
             products.push(this);
             fs.writeFile(productsPath, JSON.stringify(products), (err) => {
                 console.log(err);
@@ -31,6 +32,12 @@ module.exports = class Product {
         });
     }
     static fetchAll(cb) {
-        getProdctsFromFile(cb);
+        getProductsFromFile(cb);
+    }
+    static findById(id, cb) {
+        getProductsFromFile((products) => {
+            const product = products.find((product) => product.id === id) || null;
+            cb(product);
+        });
     }
 };

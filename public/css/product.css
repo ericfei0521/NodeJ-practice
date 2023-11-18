@@ -23,3 +23,7 @@
 .product__description {
     text-align: center;
 }
+.btn-group {
+    display: flex;
+    justify-content: center;
+}
