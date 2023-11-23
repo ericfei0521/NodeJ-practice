@@ -6,17 +6,19 @@ block styles
 
 block content
     main
-        form.product-form(action="/admin/add-product", method="POST")
+        form.product-form(action=`/admin/${editing?'edit-product':'add-product'}`, method="POST")
             .form-control
                 label(for="title") Title
-                input(type="text", name="title")#title
+                input(type="text", name="title" value=editing?product.title:'')#title
             .form-control
                 label(for="imageUrl") image
-                input(name='imageUrl',type="text")
+                input(name='imageUrl',type="text" value=editing?product.imageUrl:'')
             .form-control
                 label(for="description") Description
-                textarea(name="description", cols="30", rows="10")
+                textarea(name="description", cols="30", rows="10") #{editing?product.description:''}
             .form-control
                 label(for="price") price
-                input(name='price',type="number",step="0.01", min="0")
-            button.btn(type="submit") Add Product
+                input(name='price',type="number",step="0.01", min="0" value=editing?product.price:'')
+            if editing
+                input(type="hidden",name="id",value=product.id)
+            button.btn(type="submit") #{editing?'Edit ':'Add Product'}

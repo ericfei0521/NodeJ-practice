@@ -18,7 +18,7 @@ block content
                             p.product__description #{product.description}
                         div.btn-group
                             .card__actions
-                                a(href=`/admin/edit-product/${product.id}`)
+                                a(href=`/admin/edit-product/${product.id}?edit=true`)
                                     button.btn Edit
                             .card__actions
                                 form(action="/admin/delete-product",method='POST')

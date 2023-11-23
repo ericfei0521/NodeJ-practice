@@ -16,19 +16,29 @@ const getProductsFromFile = (cb) => {
 };
 
 module.exports = class Product {
-    constructor(title, imageUrl, description, price) {
+    constructor(id, title, imageUrl, description, price) {
+        this.id = id;
         this.title = title;
         this.description = description;
         this.imageUrl = imageUrl;
         this.price = price;
     }
     save() {
-        this.id = crypto.randomUUID();
         getProductsFromFile((products) => {
-            products.push(this);
-            fs.writeFile(productsPath, JSON.stringify(products), (err) => {
-                console.log(err);
-            });
+            if (this.id) {
+                const existingProductIndex = products.findIndex((prod) => prod.id === this.id);
+                const updateProducts = [...products];
+                updateProducts[existingProductIndex] = this;
+                fs.writeFile(productsPath, JSON.stringify(updateProducts), (err) => {
+                    console.log(err);
+                });
+            } else {
+                this.id = crypto.randomUUID();
+                products.push(this);
+                fs.writeFile(productsPath, JSON.stringify(products), (err) => {
+                    console.log(err);
+                });
+            }
         });
     }
     static fetchAll(cb) {
