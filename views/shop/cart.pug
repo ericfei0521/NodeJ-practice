@@ -5,4 +5,24 @@ block styles
 
 block content
     main
-        h1 Cart
+        if cart
+            .grid
+                if cart.products.length > 0
+                    each product in cart.products
+                        article.card.product-item
+                            header.card__header
+                                h1.product__title #{product.title}
+                            div.card__image
+                                img(src=product.imageUrl, alt="A Book")
+                            div.card__content
+                                h2.product__price $#{product.price}
+                                p.product__description #{product.description}
+
+                            .card__actions
+                                div number : #{product.qty}
+                                form(action="/cart-delete-item",method="POST")
+                                    input(type="hidden",name="productId",value=product.id)
+                                    button.btn(type="submit") -
+
+        else
+            h1 not item in cart

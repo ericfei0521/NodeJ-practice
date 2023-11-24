@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const rootDir = require('../util/path');
 const crypto = require('crypto');
-
+const Cart = require('./cart');
 const productsPath = path.join(rootDir, 'data', 'products.json');
 
 const getProductsFromFile = (cb) => {
@@ -41,6 +41,18 @@ module.exports = class Product {
             }
         });
     }
+
+    static deleteProductById(id) {
+        getProductsFromFile((products) => {
+            const updateProducts = products.filter((product) => product.id !== id);
+            fs.writeFile(productsPath, JSON.stringify(updateProducts), (err) => {
+                if (!err) {
+                    Cart.deleteProductById(id);
+                }
+            });
+        });
+    }
+
     static fetchAll(cb) {
         getProductsFromFile(cb);
     }
