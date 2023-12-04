@@ -1,4 +1,5 @@
 const Product = require('../models/product');
+const crypto = require('crypto');
 
 exports.getAddProduct = (req, res, next) => {
     res.render('admin/edit-product', {
@@ -10,10 +11,15 @@ exports.getAddProduct = (req, res, next) => {
 
 exports.postAddProduct = (req, res, next) => {
     const { title = '', imageUrl = '', description = '', price = '' } = req.body;
-    const product = new Product(null, title, imageUrl, description, price);
-    product
-        .save()
+    Product.create({
+        id: crypto.randomUUID(),
+        title: title,
+        imageUrl: imageUrl,
+        description: description,
+        price: price,
+    })
         .then(() => {
+            console.log('SUCCESS CREATED');
             res.redirect('/');
         })
         .catch((err) => console.log(err));
@@ -25,17 +31,16 @@ exports.getEditProduct = (req, res, next) => {
     if (!editMode) {
         res.redirect('/');
     }
-    Product.findById(prodUuid, (product) => {
-        if (!product) {
-            res.redirect('/');
-        }
-        res.render('admin/edit-product', {
-            pageTitle: 'Edit Product',
-            path: 'admin/edit-product',
-            editing: editMode,
-            product: product,
-        });
-    });
+    Product.findByPk(prodUuid)
+        .then((product) =>
+            res.render('admin/edit-product', {
+                pageTitle: 'Edit Product',
+                path: 'admin/edit-product',
+                editing: editMode,
+                product: product,
+            })
+        )
+        .catch((err) => console.log(err));
 };
 
 exports.postEditProduct = (req, res, next) => {
@@ -46,14 +51,16 @@ exports.postEditProduct = (req, res, next) => {
 };
 
 exports.getProducts = (req, res, next) => {
-    Product.fetchAll((products) =>
-        res.render('admin/products', {
-            prods: products,
-            pageTitle: 'my products',
-            path: '/admin/products',
-            hasProducts: products.length > 0,
-        })
-    );
+    Product.findAll()
+        .then((products) =>
+            res.render('admin/products', {
+                prods: products,
+                pageTitle: 'my products',
+                path: '/admin/products',
+                hasProducts: products.length > 0,
+            })
+        )
+        .catch((err) => console.log(err));
 };
 
 exports.deleteProduct = (req, res, next) => {

@@ -2,50 +2,44 @@ const Product = require('../models/product');
 const Cart = require('../models/cart');
 
 exports.getProducts = (req, res, next) => {
-    Product.fetchAll()
-        .then((data) =>
+    Product.findAll()
+        .then((products) =>
             res.render('shop/product-list', {
-                prods: data[0],
-                pageTitle: 'All products',
+                prods: products,
+                pageTitle: 'my products',
                 path: '/products',
-                activeShop: true,
-                productCSS: true,
+                hasProducts: products.length > 0,
             })
         )
-        .catch((err) => {
-            console.log(err);
-        });
+        .catch((err) => console.log(err));
 };
 
 exports.getProductDetail = (req, res, next) => {
     const productUuid = req.params.productUuid;
-    Product.findById(productUuid)
-        .then(([products]) =>
+    Product.findByPk(productUuid)
+        .then((result) => {
             res.render('shop/product-details', {
-                pageTitle: products[0]?.title,
+                pageTitle: result?.title,
                 path: '/products/' + productUuid,
-                product: products[0],
-            })
-        )
+                product: result,
+            });
+        })
         .catch((err) => {
             console.log(err);
         });
 };
 
 exports.getIndex = (req, res, next) => {
-    Product.fetchAll()
-        .then((data) =>
-            res.render('shop/index', {
-                prods: data[0],
-                pageTitle: 'All products',
+    Product.findAll()
+        .then((products) =>
+            res.render('shop/product-list', {
+                prods: products,
+                pageTitle: 'my products',
                 path: '/',
-                activeShop: true,
-                productCSS: true,
+                hasProducts: products.length > 0,
             })
         )
-        .catch((err) => {
-            console.log(err);
-        });
+        .catch((err) => console.log(err));
 };
 
 exports.getCart = (req, res, next) => {

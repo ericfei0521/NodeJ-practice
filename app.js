@@ -4,6 +4,7 @@ const errorControllers = require('./controllers/errors');
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
+const sequelize = require('./util/database');
 
 app.set('view engine', 'pug');
 app.set('views', 'views');
@@ -19,4 +20,9 @@ app.use(shopRoutes);
 
 app.use(errorControllers.get404page);
 
-app.listen(3000);
+sequelize
+    .sync()
+    .then((result) => {
+        app.listen(3000);
+    })
+    .catch((err) => console.log(err));
