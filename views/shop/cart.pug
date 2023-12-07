@@ -5,24 +5,24 @@ block styles
 
 block content
     main
-        if cart
+        if cart && cart.length > 0
             .grid
-                if cart.products.length > 0
-                    each product in cart.products
-                        article.card.product-item
-                            header.card__header
-                                h1.product__title #{product.title}
-                            div.card__image
-                                img(src=product.imageUrl, alt="A Book")
-                            div.card__content
-                                h2.product__price $#{product.price}
-                                p.product__description #{product.description}
+                each product in cart
+                    article.card.product-item
+                        header.card__header
+                            h1.product__title #{product.title}
+                        div.card__image
+                            img(src=product.imageUrl, alt="A Book")
+                        div.card__content
+                            h2.product__price $#{product.price}
+                            p.product__description #{product.description}
 
-                            .card__actions
-                                div number : #{product.qty}
-                                form(action="/cart-delete-item",method="POST")
-                                    input(type="hidden",name="productId",value=product.id)
-                                    button.btn(type="submit") -
-
+                        .card__actions
+                            div number : #{product.cartItem.quantity}
+                            form(action="/cart-delete-item",method="POST")
+                                input(type="hidden",name="productId",value=product.id)
+                                button.btn(type="submit") -
+            form(action="/create-order" method="POST")
+                button.btn(type='submit') Order now
         else
             h1 not item in cart

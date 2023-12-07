@@ -5,4 +5,13 @@ block styles
 
 block content
     main
-        h1 Orders
+        if orders && orders.length>0
+            ul
+                each order in orders 
+                    li 
+                        h3 #{order.id} 
+                        ul 
+                            each product in order.products
+                                div #{product.title} #{product.orderItem.quantity} total : $ #{product.price * product.orderItem.quantity}
+        else 
+            h1 No orders
