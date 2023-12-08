@@ -116,7 +116,6 @@ exports.getOrders = (req, res, next) => {
     req.user
         .getOrders({ include: ['products'] })
         .then((orders) => {
-            console.log('orders', orders[0].products[0].orderItem);
             res.render('shop/orders', {
                 pageTitle: 'orders',
                 orders: orders,
