@@ -11,7 +11,7 @@ exports.getAddProduct = (req, res, next) => {
 
 exports.postAddProduct = (req, res, next) => {
     const { title = '', imageUrl = '', description = '', price = '' } = req.body;
-    const product = new Product(title, price, description, imageUrl);
+    const product = new Product(title, price, description, imageUrl, null, req.user._id);
     product
         .save()
         .then(() => {
@@ -61,18 +61,11 @@ exports.getProducts = (req, res, next) => {
         .catch((err) => console.log(err));
 };
 
-// exports.deleteProduct = (req, res, next) => {
-//     const productId = req.body.productId;
-//     Product.findByPk(productId)
-//         .then((product) => {
-//             if (product) {
-//                 return product.destroy();
-//             } else {
-//                 res.redirect('/admin/products');
-//             }
-//         })
-//         .then(() => {
-//             res.redirect('/admin/products');
-//         })
-//         .catch((err) => console.log(err));
-// };
+exports.deleteProduct = (req, res, next) => {
+    const productId = req.body.productId;
+    Product.deleteById(productId)
+        .then(() => {
+            res.redirect('/admin/products');
+        })
+        .catch((err) => console.log(err));
+};

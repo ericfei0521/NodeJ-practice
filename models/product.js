@@ -1,12 +1,13 @@
 const mongodb = require('mongodb');
 const getDb = require('../util/database').getDb;
 class Product {
-    constructor(title, price, description, imageUrl, id) {
+    constructor(title, price, description, imageUrl, id, userId) {
         this.title = title;
         this.price = price;
         this.description = description;
         this.imageUrl = imageUrl;
         this._id = id;
+        this.userId = userId;
     }
     static fetchAll() {
         const db = getDb();
@@ -15,7 +16,6 @@ class Product {
             .find()
             .toArray()
             .then((products) => {
-                console.log(products);
                 return products;
             })
             .catch((err) => {
@@ -24,14 +24,21 @@ class Product {
     }
     static fetchProductById(id) {
         const db = getDb();
-        console.log(id);
         return db
             .collection('products')
             .findOne({ _id: new mongodb.ObjectId(id) })
             .then((result) => {
-                console.log(result);
                 return result;
             })
+            .catch((err) => {
+                throw err;
+            });
+    }
+    static deleteById(id) {
+        const db = getDb();
+        return db
+            .collection('products')
+            .deleteOne({ _id: new mongodb.ObjectId(id) })
             .catch((err) => {
                 throw err;
             });

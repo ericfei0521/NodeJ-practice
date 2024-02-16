@@ -5,6 +5,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
 const { mongoConnect } = require('./util/database');
+const User = require('./models/user');
 
 app.set('view engine', 'pug');
 app.set('views', 'views');
@@ -15,13 +16,15 @@ const shopRoutes = require('./routes/shop');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use((req, res, next) => {
-    // User.findByPk('eric001')
-    //     .then((user) => {
-    //         req.user = user;
-    //         next();
-    //     })
-    //     .catch((err) => console.log(err));
-    next();
+    User.findById('65cb30538e95f26efd7c92d1')
+        .then((user) => {
+            req.user = new User(user.name, user.email, user.cart, user._id);
+            next();
+        })
+        .catch((err) => {
+            console.log(err);
+            next();
+        });
 });
 
 app.use('/admin', adminRoutes);
