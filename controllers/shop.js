@@ -45,17 +45,14 @@ exports.getIndex = (req, res, next) => {
 exports.getCart = (req, res, next) => {
     req.user
         .getCart()
-        .then((cart) => {
-            if (cart) {
-                cart.getProducts()
-                    .then((products) => {
-                        return res.render('shop/cart', {
-                            pageTitle: 'cart',
-                            cart: products,
-                            path: '/cart',
-                        });
-                    })
-                    .catch((err) => console.log(err));
+        .then((products) => {
+            if (products) {
+                console.log('products', products);
+                return res.render('shop/cart', {
+                    pageTitle: 'cart',
+                    cart: products,
+                    path: '/cart',
+                });
             } else {
                 return res.render('shop/cart', {
                     pageTitle: 'cart',
@@ -74,41 +71,6 @@ exports.postCart = (req, res, next) => {
             return req.user.addToCart(product);
         })
         .then((result) => console.log('result', result));
-    // let fetchedCart;
-    // let productQty = 1;
-    // let cartItemId = crypto.randomUUID();
-    // req.user
-    //     .getCart()
-    //     .then((cart) => {
-    //         if (!cart) {
-    //             req.user.createCart({ id: crypto.randomUUID() });
-    //         }
-    //         return cart;
-    //     })
-    //     .then((cart) => {
-    //         fetchedCart = cart;
-    //         return cart.getProducts({ where: { id: productId } });
-    //     })
-    //     .then((products) => {
-    //         let product;
-    //         if (products.length > 0) {
-    //             product = products[0];
-    //         }
-    //         if (product) {
-    //             productQty = product.cartItem.quantity + 1;
-    //             cartItemId = product.cartItem.id;
-    //             return product;
-    //         } else {
-    //             return Product.findByPk(productId);
-    //         }
-    //     })
-    //     .then((product) => {
-    //         return fetchedCart.addProduct(product, {
-    //             through: { id: cartItemId, quantity: productQty },
-    //         });
-    //     })
-    //     .then(() => res.redirect('/cart'))
-    //     .catch((err) => console.log(err));
 };
 
 exports.getCheckout = (req, res, next) => {
