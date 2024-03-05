@@ -54,6 +54,61 @@ class User {
                 });
             });
     }
+    deleteCartItem(productId) {
+        const cartProductIndex = this.cart.findIndex((cp) => {
+            return String(cp.productId) === String(productId);
+        });
+        const updateCartItems = [...this.cart];
+        if (cartProductIndex >= 0) {
+            if (updateCartItems[cartProductIndex].quantity === 1) {
+                updateCartItems.splice(cartProductIndex, 1);
+            } else {
+                updateCartItems[cartProductIndex].quantity = updateCartItems[cartProductIndex].quantity - 1;
+            }
+        }
+        const db = getDb();
+        return db.collection('users').updateOne(
+            { _id: new mongodb.ObjectId(this._id) },
+            {
+                $set: {
+                    cart: updateCartItems,
+                },
+            }
+        );
+    }
+    addOrder() {
+        const db = getDb();
+        return this.getCart().then((products) => {
+            const orderData = {
+                items: products,
+                user: this._id,
+            };
+            return db
+                .collection('order')
+                .insertOne(orderData)
+                .then(() => {
+                    this.cart = [];
+                    return db.collection('users').updateOne(
+                        { _id: new mongodb.ObjectId(this._id) },
+                        {
+                            $set: {
+                                cart: [],
+                            },
+                        }
+                    );
+                });
+        });
+    }
+    getOrders() {
+        const db = getDb();
+        return db
+            .collection('order')
+            .find({ user: new mongodb.ObjectId(this._id) })
+            .toArray()
+            .then((results) => {
+                return results;
+            });
+    }
     static findById(userId) {
         const db = getDb();
         return db
