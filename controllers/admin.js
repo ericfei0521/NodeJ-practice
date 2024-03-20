@@ -1,5 +1,4 @@
 const Product = require('../models/product');
-const crypto = require('crypto');
 
 exports.getAddProduct = (req, res, next) => {
     res.render('admin/edit-product', {
@@ -11,7 +10,7 @@ exports.getAddProduct = (req, res, next) => {
 
 exports.postAddProduct = (req, res, next) => {
     const { title = '', imageUrl = '', description = '', price = '' } = req.body;
-    const product = new Product(title, price, description, imageUrl, null, req.user._id);
+    const product = new Product({ title: title, price: price, description: description, imageUrl: imageUrl });
     product
         .save()
         .then(() => {
@@ -49,15 +48,16 @@ exports.postEditProduct = (req, res, next) => {
 };
 
 exports.getProducts = (req, res, next) => {
-    Product.fetchAll()
-        .then((products) =>
-            res.render('admin/products', {
+    Product.find()
+        .then((products) => {
+            console.log('products', products);
+            return res.render('admin/products', {
                 prods: products,
                 pageTitle: 'my products',
                 path: '/admin/products',
                 hasProducts: products.length > 0,
-            })
-        )
+            });
+        })
         .catch((err) => console.log(err));
 };
 
